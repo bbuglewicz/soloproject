@@ -16,12 +16,15 @@ import org.hibernate.Transaction;
 
 public class DBConnection {
    static SessionFactory sessionFactory = null;
-
+   
    public static SessionFactory getSessionFactory() {
       if (sessionFactory != null) {
          return sessionFactory;
       }
-      Configuration configuration = new Configuration().configure();
+      Configuration configuration = new Configuration();
+      configuration.addAnnotatedClass(datamodel.Contact.class);
+      configuration.setProperty("hibernate.temp.use_jdbc_metadata_defaults","false");
+      configuration.configure();
       StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
       sessionFactory = configuration.buildSessionFactory(builder.build());
       return sessionFactory;
@@ -60,7 +63,7 @@ public class DBConnection {
       try {
          tx = session.beginTransaction();
          System.out.println((Contact)session.get(Contact.class, 1));
-        // Query q = session.createQuery("FROM Contact");
+         //Query q = session.createQuery("FROM Contact");
          List<?> contacts = session.createQuery("FROM Contact").list();
          for (Iterator<?> iterator = contacts.iterator(); iterator.hasNext();) {
         	 Contact contact = (Contact) iterator.next();
@@ -83,7 +86,7 @@ public class DBConnection {
       Session session = getSessionFactory().openSession();
       Transaction tx = null;
       try {
-         tx = session.beginTransaction();
+         tx = session.beginTransaction();         
          session.save(new Contact(name, phone, address));
          tx.commit();
       } catch (HibernateException e) {

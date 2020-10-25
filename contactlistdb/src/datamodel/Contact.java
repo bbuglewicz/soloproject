@@ -12,7 +12,7 @@ public class Contact {
 	
 	@Id // primary key
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id") // specify the column name. Without it, it will use method name
+	@Column(name = "id")
 	private Integer id;
 	
 	@Column(name = "name")
